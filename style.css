@@ -30,6 +30,10 @@ html, body {
   align-items: center;
 }
 
+.city-info{
+  visibility: hidden;
+}
+
 footer{
   position: fixed;
   left: 0;
