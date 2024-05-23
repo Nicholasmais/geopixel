@@ -3,6 +3,7 @@
 html, body {
   margin: 0;
   height: 100%;
+  font-weight: bold;
 }
 #map {
   position: absolute;
@@ -18,7 +19,7 @@ html, body {
   z-index: 1;
   width: 30vw;
   height: 70vh;
-  background-color: rgba(158, 158, 158, 0.5);
+  background-color: rgba(87, 87, 87, 0.5);
   padding: 40px;
   display: flex;
   flex-direction: column;

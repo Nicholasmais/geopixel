@@ -29,7 +29,6 @@ const input = <HTMLInputElement>document.querySelector("#input");
 const baseUrl: string = `https://maps.googleapis.com/maps/api/geocode/json?language=pt-br&key=${(window as any).API_KEY}&address=`;
 const weatherUrl: string = `https://api.hgbrasil.com/weather?user_ip=remote&format=json-cors&key=${(window as any).WEATHER_KEY}`;
 
-
 const cityInfoContainerElement = <HTMLDivElement>document.querySelector(".city-info");
 const cityNameParagraphElement =  <HTMLParagraphElement>document.querySelector("#city-name-paragraph");
 const cityDateElement =  <HTMLParagraphElement>document.querySelector("#city-date-paragraph");
@@ -75,92 +74,104 @@ const moonPhaseMap = {
 
 let weatherByDateArray: any[] = [];
 
-
 const callCityWeatherAPI = (city: string) => {
   const callCoordinate: string = baseUrl + city.split(" ").join("+");
-  
-      fetch(callCoordinate).then((response) => response.json()).then((res) => {
-        const latitude: number = res.results[0].geometry.location.lat;
-        const longitude: number = res.results[0].geometry.location.lng;
-        view.setCenter([longitude, latitude]);
-        view.setZoom(11.25);
 
-        const callWeather: string = weatherUrl + `&lat=${latitude}&lon=${longitude}`;
-        fetch(callWeather).then((response) => response.json()).then((res) => {
-          const today = {
-            "city": "Cidade: " + res.results.city,
-            "date": "Data: " + res.results.date,
-            "currentWeather": "Clima atual: " + res.results.description +
-              `<img
-                style="max-width: 32px; height: auto; display: block; margin: 0;"
-                src="https://assets.hgbrasil.com/weather/icons/conditions/${res.results.condition_slug}.svg" 
-                alt="${weatherMap[res.results.condition_slug]}"
-              >`,
-            "currentTemperature": "Temperatura atual: " + res.results.temp + "°C",
-            "maxTemperature": "Temperatura máxima: " + res.results.forecast[0].max + "°C",
-            "minTemperature": "Temperatura mínima: " + res.results.forecast[0].min + "°C",
-            "rainProbability": "Probabilidade de chuva: " + res.results.forecast[0].rain_probability + "%",
-            "moonPhase": "Fase da Lua: " + moonPhaseMap[res.results.moon_phase] + 
-              `<img 
-                style="max-width: 32px; height: auto; display: block; margin: 0;"
-                src="https://assets.hgbrasil.com/weather/icons/moon/${res.results.moon_phase}.png"
-                alt="${moonPhaseMap[res.results.moon_phase]}"
-              >`     
+  fetch(callCoordinate).then((response) => response.json()).then((res) => {
+    if (res.status === "ZERO_RESULTS"){
+      alert("Nenhum resultado encontrado.");
+      const options = selectBox.options;
+
+      for (let i = 0; i < options.length; i++) {
+          if (options[i].value == city) {
+              selectBox.remove(i);
+              break;
           }
+      }
+      return;
+    }
 
-          weatherByDateArray = [];
-          weatherDatesButtonArray[0].innerText = res.results.date;
-          weatherByDateArray.push(today);
+    const latitude: number = res.results[0].geometry.location.lat;
+    const longitude: number = res.results[0].geometry.location.lng;
+    view.setCenter([longitude, latitude]);
+    view.setZoom(11.25);
 
-          for(let i = 1; i < 4; i++){
-            weatherByDateArray.push({
-              "city": "Cidade: " + res.results.city,
-              "date": "Data: " + res.results.forecast[i].date,
-              "maxTemperature": "Temperatura máxima: " + res.results.forecast[i].max + "°C",
-              "minTemperature": "Temperatura mínima: " + res.results.forecast[i].min + "°C",
-              "rainProbability": "Probabilidade de chuva: " + res.results.forecast[i].rain_probability + "%",
-              "currentWeather": "Clima: " + res.results.forecast[i].description +
-              `<img
-                style="max-width: 32px; height: auto; display: block; margin: 0;"
-                src="https://assets.hgbrasil.com/weather/icons/conditions/${res.results.forecast[i].condition}.svg" 
-                alt="${weatherMap[res.results.forecast[i].condition]}"
-              >`,
-            });
-            weatherDatesButtonArray[i].innerText = res.results.forecast[i].date;
-          }
+    const callWeather: string = weatherUrl + `&lat=${latitude}&lon=${longitude}`;
+    fetch(callWeather).then((response) => response.json()).then((res) => {
+      const today = {
+        "city": "Cidade: " + res.results.city,
+        "date": "Data: " + res.results.date,
+        "currentWeather": "Clima atual: " + res.results.description +
+          `<img
+            style="max-width: 32px; height: auto; display: block; margin: 0;"
+            src="https://assets.hgbrasil.com/weather/icons/conditions/${res.results.condition_slug}.svg" 
+            alt="${weatherMap[res.results.condition_slug]}"
+          >`,
+        "currentTemperature": "Temperatura atual: " + res.results.temp + "°C",
+        "maxTemperature": "Temperatura máxima: " + res.results.forecast[0].max + "°C",
+        "minTemperature": "Temperatura mínima: " + res.results.forecast[0].min + "°C",
+        "rainProbability": "Probabilidade de chuva: " + res.results.forecast[0].rain_probability + "%",
+        "moonPhase": "Fase da Lua: " + moonPhaseMap[res.results.moon_phase] + 
+          `<img 
+            style="max-width: 32px; height: auto; display: block; margin: 0;"
+            src="https://assets.hgbrasil.com/weather/icons/moon/${res.results.moon_phase}.png"
+            alt="${moonPhaseMap[res.results.moon_phase]}"
+          >`     
+      }
 
-          cityNameParagraphElement.innerText = today.city;
-          cityDateElement.innerText = today.date;
-          cityWeatherDescriptionElement.innerHTML = today.currentWeather;
-          cityCurrentTemperatureElement.innerText = today.currentTemperature;
-          cityMaxTemperatureElement.innerText = today.maxTemperature;
-          cityMinTemperatureElement.innerText = today.minTemperature;
-          cityRainProbabilityElement.innerText = today.rainProbability;
-          cityMoonPhaseElement.innerHTML = today.moonPhase;
+      weatherByDateArray = [];
+      weatherDatesButtonArray[0].innerText = "Hoje";
+      weatherByDateArray.push(today);
 
-          cityInfoContainerElement.style.visibility = "visible";
-        })
-        .catch((err) => {
-          throw err;
+      for(let i = 1; i < 4; i++){
+        weatherByDateArray.push({
+          "city": "Cidade: " + res.results.city,
+          "date": "Data: " + res.results.forecast[i].date,
+          "maxTemperature": "Temperatura máxima: " + res.results.forecast[i].max + "°C",
+          "minTemperature": "Temperatura mínima: " + res.results.forecast[i].min + "°C",
+          "rainProbability": "Probabilidade de chuva: " + res.results.forecast[i].rain_probability + "%",
+          "currentWeather": "Clima: " + res.results.forecast[i].description +
+          `<img
+            style="max-width: 32px; height: auto; display: block; margin: 0;"
+            src="https://assets.hgbrasil.com/weather/icons/conditions/${res.results.forecast[i].condition}.svg" 
+            alt="${weatherMap[res.results.forecast[i].condition]}"
+          >`,
         });
-        
-      })
-      .catch((err) => {
-        throw err;
-      });
+        weatherDatesButtonArray[i].innerText = res.results.forecast[i].date;
+      }
+
+      cityNameParagraphElement.innerText = today.city;
+      cityDateElement.innerText = today.date;
+      cityWeatherDescriptionElement.innerHTML = today.currentWeather;
+      cityCurrentTemperatureElement.innerText = today.currentTemperature;
+      cityMaxTemperatureElement.innerText = today.maxTemperature;
+      cityMinTemperatureElement.innerText = today.minTemperature;
+      cityRainProbabilityElement.innerText = today.rainProbability;
+      cityMoonPhaseElement.innerHTML = today.moonPhase;
+
+      cityInfoContainerElement.style.visibility = "visible";
+    })
+    .catch((err) => {
+      throw err;
+    }); 
+  })
+  .catch((err) => {
+    throw err;
+  });
 }
 
 buttonConsult.addEventListener("click", () => {  
     const inputText: string = input.value;        
     if (!!inputText){
-      if (!cityHistory.includes(inputText)){
+      if (!cityHistory.includes(inputText)){          
         cityHistory.push(inputText);
         var option = document.createElement(`option`);
         option.textContent = inputText;
         option.value = inputText;
-        selectBox.add(option);       
+        selectBox.add(option);   
+        
+        callCityWeatherAPI(inputText);
       }
-      callCityWeatherAPI(inputText);
     }
   } 
 );
@@ -186,8 +197,8 @@ weatherDatesButtonArray.forEach((button) => {
 })
 
 selectBox.addEventListener("change", (e) => {
-    const selectedIndex: number =  (e.target as HTMLElement).options.selectedIndex;
-    const selectedCity = (e.target as HTMLElement).options[selectedIndex].value;
+    const selectedIndex: number =  (e.target as HTMLSelectElement).options.selectedIndex;
+    const selectedCity = (e.target as HTMLSelectElement).options[selectedIndex].value;
     callCityWeatherAPI(selectedCity);
   }
 );
