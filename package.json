@@ -7,9 +7,12 @@
     "serve": "vite preview"
   },
   "devDependencies": {
+    "@types/node": "^20.12.12",
+    "typescript": "^5.4.5",
     "vite": "^5.2.11"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "ol": "latest"
   }
 }

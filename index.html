@@ -4,16 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="https://openlayers.org/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Using OpenLayers with Vite</title>
+    <title>Geopixel teste</title>
   </head>
   <body>
     <div id="map"></div>
     <footer>
       <div class="footer-flex">
-        <input type="text">
-        <input type="button" value="Consultar">
+        <input type="text" id="input">
+        <input type="button" value="Consultar" id="consult">
+        <select name="select" id="select">
+          <option selected disabled>Histórico</option>
+        </select>
       </div>
     </footer>
-    <script type="module" src="./main.js"></script>
+    <script src='config.ts'></script>
+    <script type="module" src="./main.ts"></script>
   </body>
 </html>
