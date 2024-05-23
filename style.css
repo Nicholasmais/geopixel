@@ -9,6 +9,25 @@ html, body {
   top: 0;
   bottom: 0;
   width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.city-info{
+  position:absolute;
+  z-index: 1;
+  width: 30vw;
+  height: 70vh;
+  background-color: rgba(158, 158, 158, 0.5);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+#city-moon-phase-paragraph, #city-weather-description-paragraph{
+  display: flex;
+  align-items: center;
 }
 
 footer{
