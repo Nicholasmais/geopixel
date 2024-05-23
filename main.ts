@@ -75,17 +75,9 @@ const moonPhaseMap = {
 
 let weatherByDateArray: any[] = [];
 
-buttonConsult.addEventListener("click", () => {  
-    const inputText: string = input.value;        
-    if (!!inputText){
-      if (!cityHistory.includes(inputText)){
-        cityHistory.push(inputText);
-        var option = document.createElement(`option`);
-        option.textContent = inputText;
-        option.value = inputText;
-        selectBox.add(option);       
-      }
-      const callCoordinate: string = baseUrl + inputText.split(" ").join("+");
+
+const callCityWeatherAPI = (city: string) => {
+  const callCoordinate: string = baseUrl + city.split(" ").join("+");
   
       fetch(callCoordinate).then((response) => response.json()).then((res) => {
         const latitude: number = res.results[0].geometry.location.lat;
@@ -155,7 +147,20 @@ buttonConsult.addEventListener("click", () => {
       })
       .catch((err) => {
         throw err;
-      });     
+      });
+}
+
+buttonConsult.addEventListener("click", () => {  
+    const inputText: string = input.value;        
+    if (!!inputText){
+      if (!cityHistory.includes(inputText)){
+        cityHistory.push(inputText);
+        var option = document.createElement(`option`);
+        option.textContent = inputText;
+        option.value = inputText;
+        selectBox.add(option);       
+      }
+      callCityWeatherAPI(inputText);
     }
   } 
 );
@@ -179,3 +184,10 @@ const changeDateInfo = (event: EventTarget) => {
 weatherDatesButtonArray.forEach((button) => {
   button.addEventListener("click", (e) => changeDateInfo(e.target!));
 })
+
+selectBox.addEventListener("change", (e) => {
+    const selectedIndex: number =  (e.target as HTMLElement).options.selectedIndex;
+    const selectedCity = (e.target as HTMLElement).options[selectedIndex].value;
+    callCityWeatherAPI(selectedCity);
+  }
+);
