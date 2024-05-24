@@ -186,10 +186,9 @@ buttonConsult.addEventListener("click", () => {
         var option = document.createElement(`option`);
         option.textContent = inputText;
         option.value = inputText;
-        selectBox.add(option);   
-        
-        callCityWeatherAPI(inputText);
+        selectBox.add(option);           
       }
+      callCityWeatherAPI(inputText);
     }
   } 
 );
