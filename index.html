@@ -9,28 +9,28 @@
   <body>
     <div id="map"></div>
     <div class="city-info">
-      <div class="city-info-text" id="city-info-text">
-        <p id="city-name-paragraph"></p>
-        <p id="city-date-paragraph"></p>
-        <p id="city-current-temperature-paragraph"></p>      
-        <p id="city-max-temperature-paragraph"></p>      
-        <p id="city-min-temperature-paragraph"></p>
-        <p id="city-weather-description-paragraph"></p>
-        <p id="city-rain-probability-paragraph"></p>
-        <p id="city-moon-phase-paragraph"></p>      
+      <div class="city-info-text" data-cy="city-info-text">
+        <p id="city-name-paragraph" data-cy="city-name-paragraph"></p>
+        <p id="city-date-paragraph" data-cy="city-date-paragraph"></p>
+        <p id="city-current-temperature-paragraph" data-cy="city-current-temperature-paragraph"></p> 
+        <p id="city-max-temperature-paragraph" data-cy="city-max-temperature-paragraph"></p>      
+        <p id="city-min-temperature-paragraph" data-cy="city-min-temperature-paragraph"></p>
+        <p id="city-weather-description-paragraph" data-cy="city-weather-description-paragraph"></p>
+        <p id="city-rain-probability-paragraph" data-cy="city-rain-probability-paragraph"></p>
+        <p id="city-moon-phase-paragraph" data-cy="city-moon-phase-paragraph"></p>      
       </div>
       <div class="city-info-buttons">
-          <button type="button" id="button-1"></button>
-          <button type="button" id="button-2"></button>
-          <button type="button" id="button-3"></button>
-          <button type="button" id="button-4"></button>
+          <button type="button" id="button-1" data-cy="button-1"></button>
+          <button type="button" id="button-2" data-cy="button-2"></button>
+          <button type="button" id="button-3" data-cy="button-3"></button>
+          <button type="button" id="button-4" data-cy="button-4"></button>
       </div>
     </div>
     <footer>
       <div class="footer-flex">
-        <input type="text" id="input">
-        <input type="button" value="Consultar cidade" id="consult">
-        <select name="select" id="select">
+        <input type="text" id="input" data-cy="input">
+        <input type="button" value="Consultar cidade" id="consult" data-cy="consult">
+        <select name="select" id="select" data-cy="select">
           <option selected disabled>Histórico</option>
         </select>
       </div>

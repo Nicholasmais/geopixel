@@ -4,6 +4,7 @@ import { useGeographic } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 
+// Inicializa o mapa interativo
 useGeographic();
 
 const view = new View({
@@ -21,14 +22,17 @@ const map: Map = new Map({
   view: view
 });
 
+
 const cityHistory: string[] = [];
 const selectBox = <HTMLSelectElement >document.querySelector("#select");
 const buttonConsult = <HTMLButtonElement >document.querySelector("#consult");
 const input = <HTMLInputElement>document.querySelector("#input");
 
+// Os endpoints que serão chamados para obter as coordenadas e depois o clima
 const baseUrl: string = `https://maps.googleapis.com/maps/api/geocode/json?language=pt-br&key=${(window as any).API_KEY}&address=`;
 const weatherUrl: string = `https://api.hgbrasil.com/weather?user_ip=remote&format=json-cors&key=${(window as any).WEATHER_KEY}`;
 
+// Os elemento html que correspondem a tag <p> que mostraram as informações
 const cityInfoContainerElement = <HTMLDivElement>document.querySelector(".city-info");
 const cityNameParagraphElement =  <HTMLParagraphElement>document.querySelector("#city-name-paragraph");
 const cityDateElement =  <HTMLParagraphElement>document.querySelector("#city-date-paragraph");
@@ -39,6 +43,7 @@ const cityMinTemperatureElement =  <HTMLParagraphElement>document.querySelector(
 const cityRainProbabilityElement =  <HTMLParagraphElement>document.querySelector("#city-rain-probability-paragraph");
 const cityMoonPhaseElement =  <HTMLParagraphElement>document.querySelector("#city-moon-phase-paragraph");
 
+// PAra o usuario alternar entre os dias, utilizou-se 4 botoes, de hoje, amanha, depois de amanha e no dia seguinte
 const weatherDatesButtonArray: HTMLButtonElement[] = [
   document.querySelector("#button-1")!,
   document.querySelector("#button-2")!,
@@ -46,6 +51,9 @@ const weatherDatesButtonArray: HTMLButtonElement[] = [
   document.querySelector("#button-4")!,
 ];
 
+// Um mapa para obter os textos com base na chave retornada pela api. Obtido no site
+// https://console.hgbrasil.com/documentation/weather/condition_slugs
+// https://console.hgbrasil.com/documentation/weather/moon_phases
 const weatherMap = {
   "storm" : "tempestade",
   "snow" : "neve",
@@ -72,16 +80,19 @@ const moonPhaseMap = {
   "waning_crescent" : "Lua minguante"
 }
 
+// As informações para mostrar nos paragrafos serao salvas em um array, para entao apenas alterar o indice para refletir o dia escolhido
 let weatherByDateArray: any[] = [];
 
 const callCityWeatherAPI = (city: string) => {
-  const callCoordinate: string = baseUrl + city.split(" ").join("+");
+  // Obter a url para fazer o GET, cada espaço deve ser subtituido por um sinal de +
+  const callCoordinate: string = baseUrl + city.replaceAll(" ", "+");
 
   fetch(callCoordinate).then((response) => response.json()).then((res) => {
     if (res.status === "ZERO_RESULTS"){
       alert("Nenhum resultado encontrado.");
       const options = selectBox.options;
 
+      // Como na lógica ele adiciona ao select a cidade que buscou, caso haja erro deve-se exlcuir do select
       for (let i = 0; i < options.length; i++) {
           if (options[i].value == city) {
               selectBox.remove(i);
@@ -91,13 +102,16 @@ const callCityWeatherAPI = (city: string) => {
       return;
     }
 
+    // Posiona o mapa para as coordenadas obtidas
     const latitude: number = res.results[0].geometry.location.lat;
     const longitude: number = res.results[0].geometry.location.lng;
     view.setCenter([longitude, latitude]);
     view.setZoom(11.25);
 
+    // Prepara a url para obter o clima com base nas coordenadas
     const callWeather: string = weatherUrl + `&lat=${latitude}&lon=${longitude}`;
     fetch(callWeather).then((response) => response.json()).then((res) => {
+      // Com a resposta, esse objeto será o primeiro a ser adicionado ao array dos dias, já recebendo as informações e as imagens para serem mostrados. A string possui uma formatação HTML para ser utilizada posteriormente no innerHTML
       const today = {
         "city": "Cidade: " + res.results.city,
         "date": "Data: " + res.results.date,
@@ -119,10 +133,12 @@ const callCityWeatherAPI = (city: string) => {
           >`     
       }
 
+      // Adiciona a data atual ao array
       weatherByDateArray = [];
       weatherDatesButtonArray[0].innerText = "Hoje";
       weatherByDateArray.push(today);
 
+      // Adiciona as demais datas ao array, semelhante a data atual
       for(let i = 1; i < 4; i++){
         weatherByDateArray.push({
           "city": "Cidade: " + res.results.city,
@@ -140,6 +156,7 @@ const callCityWeatherAPI = (city: string) => {
         weatherDatesButtonArray[i].innerText = res.results.forecast[i].date;
       }
 
+      // Preenche ja os paragrafos com a data atual por padrão
       cityNameParagraphElement.innerText = today.city;
       cityDateElement.innerText = today.date;
       cityWeatherDescriptionElement.innerHTML = today.currentWeather;
@@ -160,6 +177,7 @@ const callCityWeatherAPI = (city: string) => {
   });
 }
 
+// Botao que faz a logica do consultar. o !!inputText é para não permitir campos em branco. Caso seja campo em branco, o !inputText retornaria true pois estaria negando um vazio, por isso o segundo exclamação, para 'voltar' ao booleano correto
 buttonConsult.addEventListener("click", () => {  
     const inputText: string = input.value;        
     if (!!inputText){
@@ -176,6 +194,7 @@ buttonConsult.addEventListener("click", () => {
   } 
 );
 
+// Caso um dos botoes das data seja selecionado, ele vai extrair o id do botao, e depois usar esse id para obter o indice do array
 const changeDateInfo = (event: EventTarget) => {
   const buttonId: string = (event as HTMLElement).id;
   const buttonIdNumber: number = parseInt(buttonId.replace("button-", ""));
@@ -192,9 +211,12 @@ const changeDateInfo = (event: EventTarget) => {
   
 }
 
+// Adiciona a função acima ao clique dos botoes
 weatherDatesButtonArray.forEach((button) => {
   button.addEventListener("click", (e) => changeDateInfo(e.target!));
 })
+
+// Ao selecionar uma cidade no histórcio, chamar a mesma função que faz as requisições com as APIs com o value do select como parametro, obtendo o mesmo comportamento do botao consultar
 
 selectBox.addEventListener("change", (e) => {
     const selectedIndex: number =  (e.target as HTMLSelectElement).options.selectedIndex;

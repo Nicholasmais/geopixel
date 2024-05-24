@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["cypress"],
+    "lib": ["es6", "dom", "es2021"],    
+    "target": "es5"    
+  },
+  "include": ["**/*.ts"]
+}
