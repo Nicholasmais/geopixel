@@ -99,6 +99,9 @@ const callCityWeatherAPI = (city: string) => {
               break;
           }
       }
+
+      cityInfoContainerElement.style.visibility = "hidden";
+
       return;
     }
 
@@ -186,7 +189,7 @@ buttonConsult.addEventListener("click", () => {
         var option = document.createElement(`option`);
         option.textContent = inputText;
         option.value = inputText;
-        selectBox.add(option);           
+        selectBox.add(option);                   
       }
       callCityWeatherAPI(inputText);
     }
@@ -223,3 +226,8 @@ selectBox.addEventListener("change", (e) => {
     callCityWeatherAPI(selectedCity);
   }
 );
+
+const closeCityInfoButton = <HTMLDivElement>document.querySelector("#close-city-info");
+closeCityInfoButton.addEventListener("click", () => {
+  cityInfoContainerElement.style.visibility = "hidden";
+})
