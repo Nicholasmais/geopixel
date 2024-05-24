@@ -19,22 +19,21 @@ npm run start
 
 
 No entanto, é necessário criar uma chave api para utilizar a API do google.  
-Crie um arquivo chamado config.ts  
+Crie um arquivo chamado config.ts com o seguinte conteúdo:  
 (window as any).API_KEY = "GOOGLE_API_KEY";  
 (window as any).WEATHER_KEY = "HGBRASIL_API_KEY";  
 
 Crie um arquivo chamado cypress.config.ts  
-```json
-import { defineConfig } from "cypress";  
+import {
+    defineConfig
+} from "cypress";
 
-export default defineConfig({  
-  e2e: {  
-    setupNodeEvents(on, config) {  
-    },  
-  },  
-  env: {  
-    API_KEY: "GOOGLE_API_KEY",  
-  }  
+export default defineConfig({
+    e2e: {
+        setupNodeEvents(on, config) {},
+    },
+    env: {
+        API_KEY: "GOOGLE_API_KEY",
+    }
 });
-```
 
