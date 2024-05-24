@@ -14,7 +14,7 @@ git clone https://github.com/seu-usuario/geopixel.git
 cd geopixel  
 npm install  
 
-3. Rode o servidor
+3. Rode o servidor  
 npm run start  
 
 
