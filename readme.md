@@ -5,16 +5,16 @@ Testar a aplicação em produção: https://geopixel-private.vercel.app/
 
 Para rodar a aplicação localmente, siga estes passos:  
 
-1. Clone o repositório:
+# 1. Clone o repositório:
 
 git clone https://github.com/seu-usuario/geopixel.git  
 
-2. Instale as dependências:
+# 2. Instale as dependências:
 
 cd geopixel  
 npm install  
 
-3. Rode o servidor  
+# 3. Rode o servidor  
 npm run start  
 
 
@@ -24,6 +24,7 @@ Crie um arquivo chamado config.ts com o seguinte conteúdo:
 (window as any).WEATHER_KEY = "HGBRASIL_API_KEY";  
 
 Crie um arquivo chamado cypress.config.ts  
+```
 import {
     defineConfig
 } from "cypress";
@@ -36,4 +37,4 @@ export default defineConfig({
         API_KEY: "GOOGLE_API_KEY",
     }
 });
-
+```
