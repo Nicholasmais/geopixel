@@ -24,6 +24,7 @@ Crie um arquivo chamado config.ts
 (window as any).WEATHER_KEY = "HGBRASIL_API_KEY";  
 
 Crie um arquivo chamado cypress.config.ts  
+```json
 import { defineConfig } from "cypress";  
 
 export default defineConfig({  
@@ -35,5 +36,5 @@ export default defineConfig({
     API_KEY: "GOOGLE_API_KEY",  
   }  
 });
-
+```
 
